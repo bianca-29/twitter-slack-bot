@@ -23,17 +23,15 @@ def message(payload):
     event = payload.get('event', {})
     channel_id = event.get('channel')
     z = client.conversations_info(token=SLACK_TOKEN, channel=channel_id)
-    print(z)
     channel_name = z['channel']['name_normalized']
     user_id = event.get('user')
     x = client.users_info(token=SLACK_TOKEN, user=user_id)
     username = x['user']['name']
     text=event.get('text')
-    msg=re.findall('.*-tweet.*', text)
+    msg=re.findall(r'(?<=-tweet\s).*', text)
     if BOT_ID != user_id and msg:
-        client.chat_postMessage(channel=channel_id, text="You have posted a tweet :)")
-        msg_string = text
-        print(text)
+        client.chat_postMessage(channel=channel_id, text='You have posted a tweet :)')
+        msg_string = msg[0] + ' by ' + username + ' in channel: ' + channel_name;
         tweet(msg_string)
 
 
